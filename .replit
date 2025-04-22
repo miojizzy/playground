@@ -1,0 +1,52 @@
+modules = ["cpp"]
+
+[nix]
+channel = "stable-24_05"
+packages = ["bazel"]
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Build and Run C++ Utils Library Examples"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "cpp_utils_build"
+
+[[workflows.workflow]]
+name = "Build and Run C++ Utils Library Examples"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "bazel build //examples:example_main && ./bazel-bin/examples/example_main"
+
+[[workflows.workflow]]
+name = "cpp_utils_build"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "bazel build //... && bazel test //..."
+
+[deployment]
+run = ["sh", "-c", "bazel build //examples:example_main && ./bazel-bin/examples/example_main"]

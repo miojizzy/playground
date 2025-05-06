@@ -49,7 +49,7 @@ TEST(ThreadSafeQueueTest, BlockingPop) {
     EXPECT_EQ(42, value);
     
     // Test WaitAndPop with reference version
-    producer = std::thread([&queue]() {
+    std::thread second_producer([&queue]() {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         queue.Push(43);
     });
@@ -59,6 +59,7 @@ TEST(ThreadSafeQueueTest, BlockingPop) {
     EXPECT_EQ(43, ref_value);
     
     producer.join();
+    second_producer.join();
 }
 
 TEST(ThreadSafeQueueTest, PopWithTimeout) {

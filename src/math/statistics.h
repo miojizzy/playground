@@ -69,26 +69,26 @@ std::optional<T> Mode(const std::vector<T>& values) {
         return std::nullopt;
     }
     
+    // For a single element, that element is the mode
+    if (values.size() == 1) {
+        return values[0];
+    }
+    
+    // Count occurrences of each value
     std::unordered_map<T, int> counts;
     for (const auto& value : values) {
         counts[value]++;
     }
     
-    // Initialize with the first element in the counts map
-    auto it = counts.begin();
-    T mode = it->first;
-    int max_count = it->second;
-    
-    // Continue from the second element
-    ++it;
-    for (; it != counts.end(); ++it) {
-        if (it->second > max_count) {
-            mode = it->first;
-            max_count = it->second;
+    // Find the most frequent value
+    auto max_it = std::max_element(
+        counts.begin(), counts.end(),
+        [](const auto& p1, const auto& p2) {
+            return p1.second < p2.second;
         }
-    }
+    );
     
-    return mode;
+    return max_it->first;
 }
 
 /**

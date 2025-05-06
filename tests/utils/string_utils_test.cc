@@ -97,8 +97,10 @@ TEST(StringUtilsTest, Replace) {
     EXPECT_EQ("Hxllo, World!", Replace("Hello, World!", "e", "x"));
     EXPECT_EQ("Hello, Cat!", Replace("Hello, World!", "World", "Cat"));
     EXPECT_EQ("", Replace("", "Hello", "World"));
-    // Test multiple replacements
-    EXPECT_EQ("Hxllo, Wxrld!", Replace("Hello, World!", "e", "x", true));
+    // Test multiple replacements - both occurrences of 'o' replaced
+    EXPECT_EQ("Hellx, Wxrld!", Replace("Hello, World!", "o", "x", true));
+    // Test single replacement - only first occurrence
+    EXPECT_EQ("Hellx, World!", Replace("Hello, World!", "o", "x", false));
 }
 
 TEST(StringUtilsTest, ToInt) {

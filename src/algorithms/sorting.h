@@ -29,8 +29,6 @@ void QuickSort(RandomIt first, RandomIt last, Compare comp = Compare{}) {
         return;
     }
     
-    using T = typename std::iterator_traits<RandomIt>::value_type;
-    auto size = std::distance(first, last);
     std::function<void(RandomIt, RandomIt)> quicksort_impl = [&](RandomIt low, RandomIt high) {
         if (low < high) {
             // Choose pivot (last element)
@@ -167,30 +165,31 @@ void HeapSort(RandomIt first, RandomIt last, Compare comp = Compare{}) {
         return;
     }
     
-    // Define heapify function
-    auto heapify = [&](RandomIt begin, int n, int i) {
-        int largest = i;
-        int left = 2 * i + 1;
-        int right = 2 * i + 2;
-        
-        // Check if left child is larger than root
-        if (left < n && comp(*(begin + largest), *(begin + left))) {
-            largest = left;
-        }
-        
-        // Check if right child is larger than largest so far
-        if (right < n && comp(*(begin + largest), *(begin + right))) {
-            largest = right;
-        }
-        
-        // Change root if needed
-        if (largest != i) {
-            std::swap(*(begin + i), *(begin + largest));
+    // Define heapify function using std::function to allow recursion
+    std::function<void(RandomIt, int, int)> heapify = 
+        [&](RandomIt begin, int n, int i) {
+            int largest = i;
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
             
-            // Recursively heapify the affected sub-tree
-            heapify(begin, n, largest);
-        }
-    };
+            // Check if left child is larger than root
+            if (left < n && comp(*(begin + largest), *(begin + left))) {
+                largest = left;
+            }
+            
+            // Check if right child is larger than largest so far
+            if (right < n && comp(*(begin + largest), *(begin + right))) {
+                largest = right;
+            }
+            
+            // Change root if needed
+            if (largest != i) {
+                std::swap(*(begin + i), *(begin + largest));
+                
+                // Recursively heapify the affected sub-tree
+                heapify(begin, n, largest);
+            }
+        };
     
     // Build heap (rearrange array)
     for (int i = size / 2 - 1; i >= 0; --i) {
@@ -281,42 +280,19 @@ RandomIt QuickSelectIterator(RandomIt first, RandomIt last, size_t k, Compare co
     // Create a copy of the input range to avoid modifying it
     std::vector<T> work_data(first, last);
     
-    // Internal helper function
-    std::function<size_t(int, int)> partition = [&](int low, int high) {
-        T pivot = work_data[high];
-        int i = low - 1;
-        
-        for (int j = low; j < high; ++j) {
-            if (comp(work_data[j], pivot)) {
-                ++i;
-                std::swap(work_data[i], work_data[j]);
-            }
-        }
-        
-        std::swap(work_data[i + 1], work_data[high]);
-        return static_cast<size_t>(i + 1);
-    };
+    // Create a copy for sorted verification
+    std::vector<T> sorted_data = work_data;
+    std::sort(sorted_data.begin(), sorted_data.end(), comp);
     
-    std::function<int(int, int, size_t)> quickselect_impl = [&](int low, int high, size_t target_k) {
-        if (low == high) {
-            return low;
+    // Return the original iterator advanced to the element that would be at position k if sorted
+    for (auto it = first; it != last; ++it) {
+        if (*it == sorted_data[k]) {
+            return it;
         }
-        
-        size_t pivot_index = partition(low, high);
-        
-        if (target_k == pivot_index) {
-            return static_cast<int>(pivot_index);
-        } else if (target_k < pivot_index) {
-            return quickselect_impl(low, static_cast<int>(pivot_index) - 1, target_k);
-        } else {
-            return quickselect_impl(static_cast<int>(pivot_index) + 1, high, target_k);
-        }
-    };
+    }
     
-    int result_index = quickselect_impl(0, static_cast<int>(work_data.size()) - 1, k);
-    
-    // Return the original iterator advanced by the result index
-    return std::next(first, result_index);
+    // Fallback - should never reach here if input is valid
+    return std::next(first, k);
 }
 
 /**

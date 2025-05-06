@@ -74,13 +74,17 @@ std::optional<T> Mode(const std::vector<T>& values) {
         counts[value]++;
     }
     
-    T mode = values[0];
-    int max_count = 0;
+    // Initialize with the first element in the counts map
+    auto it = counts.begin();
+    T mode = it->first;
+    int max_count = it->second;
     
-    for (const auto& [value, count] : counts) {
-        if (count > max_count) {
-            mode = value;
-            max_count = count;
+    // Continue from the second element
+    ++it;
+    for (; it != counts.end(); ++it) {
+        if (it->second > max_count) {
+            mode = it->first;
+            max_count = it->second;
         }
     }
     

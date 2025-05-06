@@ -16,6 +16,11 @@ void CountingSort(std::vector<int>& data, int max_value) {
         return;
     }
     
+    // If max_value is not provided, compute it
+    if (max_value < 0) {
+        max_value = *std::max_element(data.begin(), data.end());
+    }
+    
     // Create a count array to store count of each number
     std::vector<int> count(max_value + 1, 0);
     

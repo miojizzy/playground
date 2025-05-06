@@ -48,6 +48,16 @@ TEST(ThreadSafeQueueTest, BlockingPop) {
     int value = queue.Pop();
     EXPECT_EQ(42, value);
     
+    // Test WaitAndPop with reference version
+    producer = std::thread([&queue]() {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        queue.Push(43);
+    });
+    
+    int ref_value;
+    queue.WaitAndPop(ref_value);
+    EXPECT_EQ(43, ref_value);
+    
     producer.join();
 }
 

@@ -62,6 +62,21 @@ public:
     }
 
     /**
+     * @brief Tries to pop an element from the queue without blocking.
+     * @param value Reference to store the popped value.
+     * @return True if an element was successfully popped, false if the queue was empty.
+     */
+    bool TryPop(T& value) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (queue_.empty()) {
+            return false;
+        }
+        
+        value = PopUnlocked();
+        return true;
+    }
+
+    /**
      * @brief Pops an element from the queue, blocking if the queue is empty.
      * @return The element.
      */
@@ -69,6 +84,33 @@ public:
         std::unique_lock<std::mutex> lock(mutex_);
         condition_.wait(lock, [this]() { return !queue_.empty(); });
         return PopUnlocked();
+    }
+
+    /**
+     * @brief Waits for an element and pops it from the queue.
+     * @param value Reference to store the popped value.
+     */
+    void WaitAndPop(T& value) {
+        std::unique_lock<std::mutex> lock(mutex_);
+        condition_.wait(lock, [this]() { return !queue_.empty(); });
+        value = PopUnlocked();
+    }
+
+    /**
+     * @brief Waits for an element with a timeout and pops it from the queue if available.
+     * @param value Reference to store the popped value.
+     * @param timeout The maximum time to wait.
+     * @return True if an element was successfully popped, false if timeout occurred.
+     */
+    template <typename Rep, typename Period>
+    bool WaitAndPop(T& value, const std::chrono::duration<Rep, Period>& timeout) {
+        std::unique_lock<std::mutex> lock(mutex_);
+        if (!condition_.wait_for(lock, timeout, [this]() { return !queue_.empty(); })) {
+            return false;
+        }
+        
+        value = PopUnlocked();
+        return true;
     }
 
     /**

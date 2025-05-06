@@ -20,6 +20,10 @@ args = "Build and Run C++ Utils Library Examples"
 task = "workflow.run"
 args = "cpp_utils_build"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Run New Examples"
+
 [[workflows.workflow]]
 name = "Build and Run C++ Utils Library Examples"
 author = "agent"
@@ -47,6 +51,14 @@ task = "packager.installForAll"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "bazel build //... && bazel test //..."
+
+[[workflows.workflow]]
+name = "Run New Examples"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "bazel build //examples:main && ./bazel-bin/examples/main"
 
 [deployment]
 run = ["sh", "-c", "bazel build //examples:example_main && ./bazel-bin/examples/example_main"]

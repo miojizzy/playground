@@ -10,12 +10,3 @@ cc_binary(
         "//examples/math:math_examples",
     ],
 )
-
-# Keep the old example_main for backwards compatibility
-cc_binary(
-    name = "example_main",
-    srcs = ["example_main.cc"],
-    deps = [
-        "//:cpp_utils_lib",
-    ],
-)

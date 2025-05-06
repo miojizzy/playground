@@ -27,3 +27,9 @@ bazel build //...
 # Build specific components
 bazel build //src/utils:utils
 bazel build //src/data_structures:data_structures
+
+# Test everything
+bazel test //...
+
+# Build example and run
+bazel build //examples:main && ./bazel-bin/examples/main

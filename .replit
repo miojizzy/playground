@@ -5,60 +5,68 @@ channel = "stable-24_05"
 packages = ["bazel"]
 
 [workflows]
-runButton = "Project"
+runButton = "Run all"
 
 [[workflows.workflow]]
-name = "Project"
-mode = "parallel"
+name = "Build and Test C++ Utils"
 author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Build and Run C++ Utils Library Examples"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "cpp_utils_build"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Run New Examples"
-
-[[workflows.workflow]]
-name = "Build and Run C++ Utils Library Examples"
-author = "agent"
-
-[workflows.workflow.metadata]
-agentRequireRestartOnSave = false
-
-[[workflows.workflow.tasks]]
-task = "packager.installForAll"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "bazel build //examples:example_main && ./bazel-bin/examples/example_main"
-
-[[workflows.workflow]]
-name = "cpp_utils_build"
-author = "agent"
-
-[workflows.workflow.metadata]
-agentRequireRestartOnSave = false
-
-[[workflows.workflow.tasks]]
-task = "packager.installForAll"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "bazel build //... && bazel test //..."
 
 [[workflows.workflow]]
-name = "Run New Examples"
-author = "agent"
+name = "Build"
+mode = "sequential"
+author = 41808304
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "bazel build //examples:main && ./bazel-bin/examples/main"
+args = "bazel build //..."
+
+[[workflows.workflow]]
+name = "Test"
+mode = "sequential"
+author = 41808304
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "bazel test //..."
+
+[[workflows.workflow]]
+name = "Run example"
+mode = "sequential"
+author = 41808304
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "./bazel-bin/examples/main"
+
+[[workflows.workflow]]
+name = "Run all"
+mode = "sequential"
+author = 41808304
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Build"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Test"
 
 [deployment]
-run = ["sh", "-c", "bazel build //examples:example_main && ./bazel-bin/examples/example_main"]
+run = [
+  "sh",
+  "-c",
+  "bazel build //examples:example_main && ./bazel-bin/examples/example_main",
+]

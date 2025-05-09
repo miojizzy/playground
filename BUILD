@@ -7,7 +7,5 @@ cc_library(
     deps = [
         "//src/utils:utils",
         "//src/data_structures:data_structures",
-        "//src/algorithms:algorithms",
-        "//src/math:math",
     ],
 )

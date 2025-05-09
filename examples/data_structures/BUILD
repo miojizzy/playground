@@ -5,6 +5,7 @@ cc_library(
     srcs = [
         "lru_cache_example.cc",
         "thread_safe_queue_example.cc",
+        "custom_object_example.cc",
     ],
     hdrs = [],
     deps = [

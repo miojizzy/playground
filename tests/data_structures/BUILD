@@ -17,3 +17,12 @@ cc_test(
         "@com_google_googletest//:gtest_main",
     ],
 )
+
+cc_test(
+    name = "custom_object_test",
+    srcs = ["custom_object_test.cc"],
+    deps = [
+        "//src/data_structures:custom_object",
+        "@com_google_googletest//:gtest_main",
+    ],
+)

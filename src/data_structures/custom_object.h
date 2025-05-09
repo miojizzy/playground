@@ -31,6 +31,7 @@ public:
         name_ = other.name_;
         value_ = other.value_;
         std::cout << "CustomObject assign copied: " << name_ << ", " << value_ << std::endl;
+        return *this;
     }
     CustomObject(CustomObject&& other) {
         name_ = std::move(other.name_);
@@ -41,6 +42,7 @@ public:
         name_ = std::move(other.name_);
         value_ = std::move(other.value_);
         std::cout << "CustomObject assign moved: " << name_ << ", " << value_ << std::endl;
+        return *this;
     }
 
     std::string GetName() const { return name_; }

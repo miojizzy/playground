@@ -13,6 +13,7 @@ void RunStringUtilsExample();
 void RunFileUtilsExample();
 void RunLRUCacheExample();
 void RunThreadSafeQueueExample();
+void RunCustomObjectExample();
 
 }  // namespace examples
 }  // namespace cpp_utils
@@ -33,6 +34,9 @@ int main() {
   std::cout << std::endl;
   
   cpp_utils::examples::RunThreadSafeQueueExample();
+  std::cout << std::endl;
+  
+  cpp_utils::examples::RunCustomObjectExample();
   std::cout << std::endl;
 
   return 0;

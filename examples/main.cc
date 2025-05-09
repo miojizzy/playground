@@ -11,8 +11,6 @@ namespace examples {
 
 void RunStringUtilsExample();
 void RunFileUtilsExample();
-void RunSortingExample();
-void RunStatisticsExample();
 void RunLRUCacheExample();
 void RunThreadSafeQueueExample();
 
@@ -28,14 +26,6 @@ int main() {
   std::cout << std::endl;
   
   cpp_utils::examples::RunFileUtilsExample();
-  std::cout << std::endl;
-
-  // Algorithm examples
-  cpp_utils::examples::RunSortingExample();
-  std::cout << std::endl;
-
-  // Math examples
-  cpp_utils::examples::RunStatisticsExample();
   std::cout << std::endl;
 
   // Data Structures examples

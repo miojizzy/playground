@@ -5,6 +5,7 @@ cc_library(
     hdrs = [
         "thread_safe_queue.h",
         "lru_cache.h",
+        "custom_object.h",
     ],
     copts = ["-std=c++17"],
 )
@@ -18,5 +19,11 @@ cc_library(
 cc_library(
     name = "lru_cache",
     hdrs = ["lru_cache.h"],
+    copts = ["-std=c++17"],
+)
+
+cc_library(
+    name = "custom_object",
+    hdrs = ["custom_object.h"],
     copts = ["-std=c++17"],
 )
